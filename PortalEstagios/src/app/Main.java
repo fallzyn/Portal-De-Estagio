@@ -13,10 +13,23 @@ public class Main {
         return sc.nextLine().trim();
     }
     private static long numero(String msg){
-        return Long.parseLong(ler(msg));
+        while (true) {
+            try {
+                return Long.parseLong(ler(msg));
+            } catch (NumberFormatException e) {
+            System.out.println("Número inválido. Tente novamente.");
+        }
+    }
+
     }
     private static int inteiro(String msg){
-        return Integer.parseInt(ler(msg));
+        while (true) {
+            try {
+            return Integer.parseInt(ler(msg));
+        } catch (NumberFormatException e) {
+            System.out.println("Número inválido. Tente novamente.");
+        }
+    }
     }
     private static <E extends Enum<E>> E opcao(String msg,Class<E> tipo){
         return Enum.valueOf(tipo,ler(msg+" "+Arrays.toString(tipo.getEnumConstants())).toUpperCase(Locale.ROOT));
@@ -91,17 +104,40 @@ public class Main {
             case ADMINISTRADOR->admin();
         }
     }
-    private static void estudante()throws SQLException{
-        System.out.println("""
-            | 1 Candidatar-se 
-            | 2 Minhas candidaturas
-            """);
-        switch(ler("Opção")){
-            case "1"->System.out.println(svc.candidatar(atual.id(),numero("ID da vaga")));
-            case "2"->svc.minhas(atual.id()).forEach(System.out::println);
-            default->System.out.println("Opção inválida.");
+    private static void estudante() throws SQLException {
+
+    System.out.println(
+        "1 Candidatar-se | 2 Minhas candidaturas | 0 Voltar"
+    );
+
+    while (true) {
+        switch (ler("Opção")) {
+
+            case "1" -> System.out.println(
+                svc.candidatar(
+                    atual.id(),
+                    numero("ID da vaga")
+                )
+            );
+
+            case "2" -> svc.minhas(atual.id())
+                .forEach(System.out::println);
+
+            case "0" -> {
+                return;
+            }
+
+            default -> {
+                System.out.println(
+                    "Opção inválida. Tente novamente."
+                );
+                continue;
+            }
         }
+
+        return;
     }
+}
     private static void empresa()throws SQLException{
         System.out.println("""
             | 1 Publicar 

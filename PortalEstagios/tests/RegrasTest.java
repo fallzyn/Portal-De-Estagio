@@ -63,7 +63,7 @@ class RegrasTest {
         public Candidatura salvar(long estudante,long vaga)throws SQLException{
             if(existe)throw new SQLException("Candidatura duplicada");
             existe=true;
-            return new Candidatura(1,estudante,vaga,java.time.LocalDateTime.now());
+            return new Candidatura(1,estudante,vaga,java.time.LocalDate.now());
         }
         public List<Candidatura> porEstudante(long id){
             return List.of();

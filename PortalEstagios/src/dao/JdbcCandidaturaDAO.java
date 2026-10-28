@@ -3,9 +3,15 @@ import java.sql.*;
 import java.util.*;
 import model.*;
 public class JdbcCandidaturaDAO implements CandidaturaDAO {
-    private Candidatura map(ResultSet r)throws SQLException{
-        return new Candidatura(r.getLong("id"),r.getLong("estudante_id"),r.getLong("vaga_id"),r.getTimestamp("data_inscricao").toLocalDateTime());
-    }
+    private Candidatura map(ResultSet r) throws SQLException {
+
+    return new Candidatura(
+        r.getLong("id"),
+        r.getLong("estudante_id"),
+        r.getLong("vaga_id"),
+        r.getDate("data_inscricao").toLocalDate()
+    );
+}
     public Candidatura salvar(long estudante,long vaga)throws SQLException{
         try(Connection c=Conexao.abrir();
         PreparedStatement ps=c.prepareStatement("INSERT INTO candidaturas(estudante_id,vaga_id) VALUES(?,?) RETURNING *")){
