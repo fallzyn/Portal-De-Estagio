@@ -36,8 +36,8 @@ Exemplo de URL: `jdbc:postgresql://localhost:5432/portal_estagios`.
 No PowerShell, exemplo (substituir os valores locais; não enviar credenciais ao repositório):
 
 ```powershell
-$env:DB_URL = "jdbc:postgresql://localhost:5432/portal_estagios"
-$env:DB_USER = "postgres"
+$env:DB_URL = "jdbc:postgresql://SEU_HOST:5432/postgres?sslmode=require"
+$env:DB_USER = "postgres.SEU_PROJETO"
 $env:DB_PASSWORD = "SUA_SENHA_LOCAL"
 ```
 
