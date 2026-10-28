@@ -99,7 +99,6 @@ Consultar `docs/modelo.md`. O esquema relacional está em `sql/01_criacao.sql`.
 | Reiniciar o sistema | Dados continuam no banco | Nova execução do Java recuperou cadastros, vaga encerrada e candidaturas gravados antes | Passou |
 | Administrador consultar contagens | Quantidades apresentadas | 2 estudantes, 2 empresas, 1 vaga aberta, 1 encerrada e 2 candidaturas; valores conferidos por SQL | Passou |
 
-Verificação pelo menu real com entradas programadas e PostgreSQL em banco separado de testes. Rejeições esperadas contam como sucesso. Os dados de desenvolvimento não foram alterados. Entradas, resultados adicionais e correções estão em [Relatório da Entrega 1](docs/VERIFICACAO_ENTREGA_1.md).
 
 ### Testes automatizados
 
