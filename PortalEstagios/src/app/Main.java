@@ -41,8 +41,16 @@ public class Main {
     public static void main(String[] args){
         while(true){
             System.out.println("\nPORTAL DE ESTÁGIOS | Usuário: "+(atual==null?"nenhum":atual.nome()+" ("+atual.perfil()+")"));
-            System.out.println("1 Cadastrar estudante | 2 Cadastrar empresa | 3 Selecionar usuário | 4 Consultar vagas abertas | 5 Listar áreas | 6 Ações do perfil | 0 Sair");
-            String op=ler("Opção");
+            System.out.println("""
+                | 1 Cadastrar estudante 
+                | 2 Cadastrar empresa 
+                | 3 Selecionar usuário 
+                | 4 Consultar vagas abertas 
+                | 5 Listar áreas 
+                | 6 Ações do perfil 
+                | 0 Sair
+                """);
+            String op=ler("Selecione sua opção: ");
             if(op.equals("0"))return;
             executar(()->{
                 switch(op){
@@ -52,7 +60,7 @@ public class Main {
                     case "4"->consultarVagas();
                     case "5"->svc.areas().forEach(System.out::println);
                     case "6"->acoes();
-                    default->System.out.println("Opção inválida.");
+                    default->System.out.println("Opção inválida!");
                 }
             }
             );
@@ -84,7 +92,10 @@ public class Main {
         }
     }
     private static void estudante()throws SQLException{
-        System.out.println("1 Candidatar-se | 2 Minhas candidaturas");
+        System.out.println("""
+            | 1 Candidatar-se 
+            | 2 Minhas candidaturas
+            """);
         switch(ler("Opção")){
             case "1"->System.out.println(svc.candidatar(atual.id(),numero("ID da vaga")));
             case "2"->svc.minhas(atual.id()).forEach(System.out::println);
@@ -92,7 +103,13 @@ public class Main {
         }
     }
     private static void empresa()throws SQLException{
-        System.out.println("1 Publicar | 2 Minhas vagas | 3 Editar vaga | 4 Encerrar vaga | 5 Candidatos de uma vaga");
+        System.out.println("""
+            | 1 Publicar 
+            | 2 Minhas vagas 
+            | 3 Editar vaga 
+            | 4 Encerrar vaga 
+            | 5 Candidatos de uma vaga
+            """);
         switch(ler("Opção")){
             case "1"->System.out.println(svc.publicar(atual.id(),ler("Título"),ler("Descrição"),numero("ID da área"),ler("Localização"),opcao("Modalidade",Modalidade.class),inteiro("Carga horária semanal")));
             case "2"->svc.vagasEmpresa(atual.id()).forEach(System.out::println);
@@ -110,7 +127,13 @@ public class Main {
         }
     }
     private static void admin()throws SQLException{
-        System.out.println("1 Cadastrar área | 2 Listar áreas | 3 Editar área | 4 Excluir área | 5 Contagens");
+        System.out.println("""
+            | 1 Cadastrar área 
+            | 2 Listar áreas 
+            | 3 Editar área 
+            | 4 Excluir área 
+            | 5 Contagens
+            """);
         switch(ler("Opção")){
             case "1"->System.out.println(svc.criarArea(atual.id(),ler("Nome")));
             case "2"->svc.areas().forEach(System.out::println);
