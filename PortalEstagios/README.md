@@ -55,7 +55,7 @@ Para executar os testes automatizados:
 mvn test
 ```
 
-Os testes de `tests/RegrasTest.java` utilizam DAOs fictícios e **não dependem de um banco de dados**. Já a execução do menu depende do PostgreSQL configurado.
+Os testes de `tests/RegrasTest.java` utilizam DAOs fictícios e os de `tests/MainTest.java` exercitam entradas do console sem consultar a persistência. **A suíte JUnit não depende de um banco de dados**. Já a execução do menu depende do PostgreSQL configurado.
 
 ## Organização das camadas
 
@@ -81,27 +81,34 @@ O menu usa a interface funcional `RunnableSQL` para executar ações e centraliz
 
 Consultar `docs/modelo.md`. O esquema relacional está em `sql/01_criacao.sql`.
 
-## Verificação manual (preencher após executar)
+## Verificação manual — executada em 28/10/2026
 
 | Cenário | Resultado esperado | Resultado observado | Situação |
 | --- | --- | --- | --- |
-| Cadastrar estudante/empresa com e-mail válido | Cadastro realizado | [preencher] | [pendente] |
-| Repetir e-mail | Cadastro rejeitado | [preencher] | [pendente] |
-| Publicar vaga válida | Vaga criada | [preencher] | [pendente] |
-| Publicar com título vazio ou carga horária 0 | Operação rejeitada | [preencher] | [pendente] |
-| Filtrar vagas abertas por área e modalidade | Apenas vagas correspondentes | [preencher] | [pendente] |
-| Candidatura válida | Candidatura registrada | [preencher] | [pendente] |
-| Repetir candidatura | Operação rejeitada | [preencher] | [pendente] |
-| Candidatar-se a vaga encerrada | Operação rejeitada | [preencher] | [pendente] |
-| Outra empresa editar/encerrar vaga ou consultar candidatos | Acesso negado | [preencher] | [pendente] |
-| Outro estudante consultar candidaturas | Apenas candidaturas próprias | [preencher] | [pendente] |
-| Excluir área utilizada por vaga | Exclusão rejeitada | [preencher] | [pendente] |
-| Reiniciar o sistema | Dados continuam no banco | [preencher] | [pendente] |
-| Administrador consultar contagens | Quantidades apresentadas | [preencher] | [pendente] |
+| Cadastrar estudante/empresa com e-mail válido | Cadastro realizado | Bruno e empresa Beta cadastrados; registros confirmados no banco | Passou |
+| Repetir e-mail | Cadastro rejeitado | E-mail de Ana repetido foi rejeitado; quantidade de usuários não aumentou | Passou |
+| Publicar vaga válida | Vaga criada | Vaga “Teste remoto”, Tecnologia, REMOTA, 30 h, gravada e consultada | Passou |
+| Publicar com título vazio ou carga horária 0 | Operação rejeitada | Ambas as entradas foram rejeitadas sem criar vagas | Passou |
+| Filtrar vagas abertas por área e modalidade | Apenas vagas correspondentes | Tecnologia + REMOTA retornou somente a vaga correspondente; após encerramento, não retornou essa vaga | Passou |
+| Candidatura válida | Candidatura registrada | Ana inscrita na vaga “Teste remoto”; registro confirmado no banco | Passou |
+| Repetir candidatura | Operação rejeitada | Duplicidade rejeitada; permaneceu uma única inscrição do par estudante–vaga | Passou |
+| Candidatar-se a vaga encerrada | Operação rejeitada | Bruno recebeu “Vaga encerrada.”; inscrição anterior de Ana preservada | Passou |
+| Outra empresa editar/encerrar vaga ou consultar candidatos | Acesso negado | As três operações da empresa Beta foram bloqueadas; vaga original permaneceu intacta | Passou |
+| Outro estudante consultar candidaturas | Apenas candidaturas próprias | Ana viu apenas sua inscrição; Bruno viu apenas a dele, selecionando cada identidade no menu | Passou |
+| Excluir área utilizada por vaga | Exclusão rejeitada | Tecnologia não foi excluída; chave estrangeira preservou o vínculo | Passou |
+| Reiniciar o sistema | Dados continuam no banco | Nova execução do Java recuperou cadastros, vaga encerrada e candidaturas gravados antes | Passou |
+| Administrador consultar contagens | Quantidades apresentadas | 2 estudantes, 2 empresas, 1 vaga aberta, 1 encerrada e 2 candidaturas; valores conferidos por SQL | Passou |
+
+Verificação pelo menu real com entradas programadas e PostgreSQL em banco separado de testes. Rejeições esperadas contam como sucesso. Os dados de desenvolvimento não foram alterados. Entradas, resultados adicionais e correções estão em [Relatório da Entrega 1](docs/VERIFICACAO_ENTREGA_1.md).
 
 ### Testes automatizados
 
-`RegrasTest.java` contempla os três cenários exigidos: candidatura duplicada, vaga encerrada e tentativa de acessar vaga de outra empresa. Registrar o resultado real de `mvn test`: **[pendente de execução pelo grupo]**.
+Resultado em 28/10/2026: **16 testes executados, 0 falhas, 0 erros e 0 ignorados**, com recompilação completa (`mvn clean test`).
+
+- `RegrasTest.java`: 11 testes de regras, incluindo candidatura duplicada, vaga encerrada, acesso a vaga de outra empresa, permissões, campos obrigatórios e perfil nulo.
+- `MainTest.java`: 5 testes do console em processos Java separados, incluindo fim da entrada e modalidade inválida. Esses cenários não acessam o banco.
+
+Foram executadas também **38 verificações do menu com PostgreSQL real**, todas aprovadas após as correções. Elas são verificações funcionais separadas da suíte JUnit e não são executadas por `mvn test`.
 
 ## Registro de uso de IA
 
