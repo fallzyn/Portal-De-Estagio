@@ -36,8 +36,8 @@ Exemplo de URL: `jdbc:postgresql://localhost:5432/portal_estagios`.
 No PowerShell, exemplo (substituir os valores locais; não enviar credenciais ao repositório):
 
 ```powershell
-$env:DB_URL = "jdbc:postgresql://aws-1-us-west-2.pooler.supabase.com:5432/postgres?sslmode=require"
-$env:DB_USER = "postgres.xuzczpmgxpwkgyzpldvd"
+$env:DB_URL = "jdbc:postgresql://SEU_HOST:5432/postgres?sslmode=require"
+$env:DB_USER = "postgres"
 $senha = Read-Host "Senha do banco Supabase" -AsSecureString
 $env:DB_PASSWORD = [System.Net.NetworkCredential]::new("", $senha).Password
 Remove-Variable senha
@@ -51,8 +51,8 @@ mvn compile exec:java
 No Bash, o código seria diferente:
 
 ```bash
-export DB_URL='jdbc:postgresql://aws-1-us-west-2.pooler.supabase.com:5432/postgres?sslmode=require'
-export DB_USER='postgres.xuzczpmgxpwkgyzpldvd'
+export DB_URL='jdbc:postgresql://SEU_HOST:5432/postgres?sslmode=require'
+export DB_USER='postgres'
 read -s -p "Senha do banco Supabase: " DB_PASSWORD
 printf '\n'
 export DB_PASSWORD
