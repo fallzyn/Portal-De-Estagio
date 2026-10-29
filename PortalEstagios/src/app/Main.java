@@ -32,7 +32,12 @@ public class Main {
     }
     }
     private static <E extends Enum<E>> E opcao(String msg,Class<E> tipo){
-        return Enum.valueOf(tipo,ler(msg+" "+Arrays.toString(tipo.getEnumConstants())).toUpperCase(Locale.ROOT));
+        String valor=ler(msg+" "+Arrays.toString(tipo.getEnumConstants())).toUpperCase(Locale.ROOT);
+        try {
+            return Enum.valueOf(tipo,valor);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Opção inválida. Use "+Arrays.toString(tipo.getEnumConstants())+".");
+        }
     }
     private static void executar(RunnableSQL r){
         try{
@@ -52,31 +57,35 @@ public class Main {
         void run()throws SQLException;
     }
     public static void main(String[] args){
-        while(true){
-            System.out.println("\nPORTAL DE ESTÁGIOS | Usuário: "+(atual==null?"nenhum":atual.nome()+" ("+atual.perfil()+")"));
-            System.out.println("""
-                | 1 Cadastrar estudante 
-                | 2 Cadastrar empresa 
-                | 3 Selecionar usuário 
-                | 4 Consultar vagas abertas 
-                | 5 Listar áreas 
-                | 6 Ações do perfil 
-                | 0 Sair
-                """);
-            String op=ler("Selecione sua opção: ");
-            if(op.equals("0"))return;
-            executar(()->{
-                switch(op){
-                    case "1"->cadastrar(Perfil.ESTUDANTE);
-                    case "2"->cadastrar(Perfil.EMPRESA);
-                    case "3"->selecionar();
-                    case "4"->consultarVagas();
-                    case "5"->svc.areas().forEach(System.out::println);
-                    case "6"->acoes();
-                    default->System.out.println("Opção inválida!");
-                }
+        try {
+            while(true){
+                System.out.println("\nPORTAL DE ESTÁGIOS | Usuário: "+(atual==null?"nenhum":atual.nome()+" ("+atual.perfil()+")"));
+                System.out.println("""
+                    | 1 Cadastrar estudante
+                    | 2 Cadastrar empresa
+                    | 3 Selecionar usuário
+                    | 4 Consultar vagas abertas
+                    | 5 Listar áreas
+                    | 6 Ações do perfil
+                    | 0 Sair
+                    """);
+                String op=ler("Selecione sua opção");
+                if(op.equals("0"))return;
+                executar(()->{
+                    switch(op){
+                        case "1"->cadastrar(Perfil.ESTUDANTE);
+                        case "2"->cadastrar(Perfil.EMPRESA);
+                        case "3"->selecionar();
+                        case "4"->consultarVagas();
+                        case "5"->svc.areas().forEach(System.out::println);
+                        case "6"->acoes();
+                        default->System.out.println("Opção inválida!");
+                    }
+                });
             }
-            );
+        } catch (NoSuchElementException e) {
+            // Fim da entrada também pode acontecer no meio de uma operação.
+            System.out.println("\nEntrada encerrada.");
         }
     }
     private static void cadastrar(Perfil perfil)throws SQLException{
@@ -93,7 +102,12 @@ public class Main {
         String a=ler("ID da área (Enter para todas)");
         Long area=a.isEmpty()?null:Long.valueOf(a);
         String m=ler("Modalidade PRESENCIAL/REMOTA/HIBRIDA (Enter para todas)");
-        Modalidade mod=m.isEmpty()?null:Modalidade.valueOf(m.toUpperCase(Locale.ROOT));
+        Modalidade mod;
+        try {
+            mod=m.isEmpty()?null:Modalidade.valueOf(m.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Modalidade inválida. Use PRESENCIAL, REMOTA ou HIBRIDA.");
+        }
         svc.abertas(area,mod).forEach(System.out::println);
     }
     private static void acoes()throws SQLException{
@@ -126,7 +140,6 @@ public class Main {
             case "0" -> {
                 return;
             }
-
             default -> {
                 System.out.println(
                     "Opção inválida. Tente novamente."
@@ -134,7 +147,6 @@ public class Main {
                 continue;
             }
         }
-
         return;
     }
 }
