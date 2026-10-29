@@ -37,6 +37,7 @@ public class PortalService {
         return v;
     }
     public Usuario cadastrar(String nome,String email,Perfil perfil,String curso,String empresa)throws SQLException{
+        if(perfil==null)throw new IllegalArgumentException("Perfil é obrigatório.");
         texto(nome,"Nome");
         texto(email,"E-mail");
         if(!email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"))throw new IllegalArgumentException("E-mail inválido.");
