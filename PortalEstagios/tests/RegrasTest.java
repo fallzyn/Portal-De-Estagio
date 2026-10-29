@@ -83,7 +83,44 @@ class RegrasTest {
         assertThrows(IllegalArgumentException.class,()->service.candidatar(1,10));
     }
     @Test void vagaDeOutraEmpresa() {
+        assertThrows(IllegalArgumentException.class,()->service.editarVaga(3,10,"Outro título","Descrição",1,"SP",Modalidade.REMOTA,20));
         assertThrows(IllegalArgumentException.class,()->service.encerrar(3,10));
         assertThrows(IllegalArgumentException.class,()->service.candidatos(3,10));
+    }
+    @Test void perfilNuloNaoPodeCadastrar() {
+        assertThrows(IllegalArgumentException.class,()->service.cadastrar("Nome","nome@exemplo.com",null,null,"Empresa"));
+    }
+    @Test void cadastroPublicoNaoCriaAdministrador() {
+        assertThrows(IllegalArgumentException.class,()->service.cadastrar("Nome","nome@exemplo.com",Perfil.ADMINISTRADOR,null,null));
+    }
+    @Test void somenteEmpresaPublica() {
+        assertThrows(IllegalArgumentException.class,()->service.publicar(1,"Estágio","Descrição",1,"SP",Modalidade.REMOTA,30));
+    }
+    @Test void somenteEstudanteSeCandidata() {
+        assertThrows(IllegalArgumentException.class,()->service.candidatar(2,10));
+    }
+    @Test void somenteAdministradorAlteraAreasEConsultaContagens() {
+        assertThrows(IllegalArgumentException.class,()->service.criarArea(1,"Design"));
+        assertThrows(IllegalArgumentException.class,()->service.editarArea(2,1,"Design"));
+        assertThrows(IllegalArgumentException.class,()->service.excluirArea(1,1));
+        assertThrows(IllegalArgumentException.class,()->service.contagens(2));
+    }
+    @Test void vagaSemCamposObrigatoriosNaoPodeSerPublicada() {
+        assertThrows(IllegalArgumentException.class,()->service.publicar(2," ","Descrição",1,"SP",Modalidade.REMOTA,30));
+        assertThrows(IllegalArgumentException.class,()->service.publicar(2,"Estágio"," ",1,"SP",Modalidade.REMOTA,30));
+        assertThrows(IllegalArgumentException.class,()->service.publicar(2,"Estágio","Descrição",1," ",Modalidade.REMOTA,30));
+        assertThrows(IllegalArgumentException.class,()->service.publicar(2,"Estágio","Descrição",1,"SP",null,30));
+        assertThrows(IllegalArgumentException.class,()->service.publicar(2,"Estágio","Descrição",1,"SP",Modalidade.REMOTA,0));
+        assertThrows(IllegalArgumentException.class,()->service.publicar(2,"Estágio","Descrição",1,"SP",Modalidade.REMOTA,-1));
+    }
+    @Test void vagaEncerradaNaoPodeSerEditadaOuReaberta() throws Exception {
+        service.encerrar(2,10);
+        assertThrows(IllegalArgumentException.class,()->service.editarVaga(2,10,"Outro título","Descrição",1,"SP",Modalidade.REMOTA,20));
+        assertThrows(IllegalArgumentException.class,()->service.encerrar(2,10));
+        assertEquals(Situacao.ENCERRADA,vagas.vaga.situacao());
+    }
+    @Test void consultaPublicaNaoMostraVagaEncerrada() throws Exception {
+        service.encerrar(2,10);
+        assertTrue(service.abertas(null,null).isEmpty());
     }
 }
