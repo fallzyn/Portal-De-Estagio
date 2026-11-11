@@ -1,0 +1,6 @@
+MainTest.class
+JpaRepositoryIT.class
+BancoPostgresTestSupport.class
+PortalServiceIT.class
+StatusControllerTest.class
+RegrasTest.class
