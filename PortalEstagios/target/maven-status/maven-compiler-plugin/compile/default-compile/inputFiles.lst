@@ -1,5 +1,7 @@
 /workspaces/Portal-De-Estagio/PortalEstagios/src/app/Main.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/app/PortalApplication.java
+/workspaces/Portal-De-Estagio/PortalEstagios/src/controller/AreaController.java
+/workspaces/Portal-De-Estagio/PortalEstagios/src/controller/StatusController.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/dao/AreaDAO.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/dao/CandidaturaDAO.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/dao/Conexao.java
@@ -11,6 +13,7 @@
 /workspaces/Portal-De-Estagio/PortalEstagios/src/dao/JdbcVagaDAO.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/dao/UsuarioDAO.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/dao/VagaDAO.java
+/workspaces/Portal-De-Estagio/PortalEstagios/src/dto/AreaResposta.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/model/Area.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/model/Candidatura.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/model/Contagens.java
@@ -19,5 +22,9 @@
 /workspaces/Portal-De-Estagio/PortalEstagios/src/model/Situacao.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/model/Usuario.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/model/Vaga.java
+/workspaces/Portal-De-Estagio/PortalEstagios/src/repository/AreaRepository.java
+/workspaces/Portal-De-Estagio/PortalEstagios/src/repository/CandidaturaRepository.java
+/workspaces/Portal-De-Estagio/PortalEstagios/src/repository/UsuarioRepository.java
+/workspaces/Portal-De-Estagio/PortalEstagios/src/repository/VagaRepository.java
+/workspaces/Portal-De-Estagio/PortalEstagios/src/service/AreaConsultaService.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/service/PortalService.java
-/workspaces/Portal-De-Estagio/PortalEstagios/src/service/StatusController.java

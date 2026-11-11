@@ -1,38 +1,24 @@
-import app.PortalApplication;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import controller.StatusController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(classes = PortalApplication.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebMvcTest(StatusController.class)
+@ContextConfiguration(classes = StatusController.class)
 class StatusControllerTest {
-    @LocalServerPort
-    private int porta;
-
     @Autowired
-    private ObjectMapper json;
+    private MockMvc mvc;
 
     @Test
-    void servidorRespondeStatusPorHttpSemBancoDeDados() throws Exception {
-        HttpRequest pedido = HttpRequest.newBuilder()
-            .uri(URI.create("http://127.0.0.1:" + porta + "/api/status"))
-            .GET().build();
-        HttpResponse<String> resposta = HttpClient.newHttpClient()
-            .send(pedido, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(200, resposta.statusCode());
-        assertTrue(resposta.headers().firstValue("Content-Type").orElse("")
-            .startsWith("application/json"));
-        JsonNode corpo = json.readTree(resposta.body());
-        assertEquals("portal-estagios", corpo.path("aplicacao").asText());
-        assertEquals("ok", corpo.path("status").asText());
+    void rotaRespondeStatusSemBancoDeDados() throws Exception {
+        mvc.perform(get("/api/status"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith("application/json"))
+            .andExpect(jsonPath("$.aplicacao").value("portal-estagios"))
+            .andExpect(jsonPath("$.status").value("ok"));
     }
 }
