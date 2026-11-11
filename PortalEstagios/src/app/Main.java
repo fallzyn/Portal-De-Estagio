@@ -1,12 +1,30 @@
 package app;
-import dao.*;
 import model.*;
 import service.PortalService;
-import java.sql.SQLException;
+import org.springframework.boot.Banner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import java.util.*;
 public class Main {
     private static final Scanner sc=new Scanner(System.in);
-    private static final PortalService svc=new PortalService(new JdbcUsuarioDAO(),new JdbcAreaDAO(),new JdbcVagaDAO(),new JdbcCandidaturaDAO(),new JdbcEstatisticaDAO());
+    private static PortalService svc;
+    private static ConfigurableApplicationContext contexto;
+
+    // O contexto é iniciado só quando uma ação realmente precisa do banco.
+    private static PortalService servico() {
+        if (svc == null) {
+            SpringApplication aplicacao = new SpringApplication(PortalApplication.class);
+            aplicacao.setWebApplicationType(WebApplicationType.NONE);
+            aplicacao.setBannerMode(Banner.Mode.OFF);
+            aplicacao.setLogStartupInfo(false);
+            contexto = aplicacao.run();
+            svc = contexto.getBean(PortalService.class);
+        }
+        return svc;
+    }
     private static Usuario atual;
     private static String ler(String msg){
         System.out.print(msg+": ");
@@ -39,7 +57,7 @@ public class Main {
             throw new IllegalArgumentException("Opção inválida. Use "+Arrays.toString(tipo.getEnumConstants())+".");
         }
     }
-    private static void executar(RunnableSQL r){
+    private static void executar(Acao r){
         try{
             r.run();
         }
@@ -49,12 +67,18 @@ public class Main {
         catch(IllegalArgumentException e){
             System.out.println("Erro: "+e.getMessage());
         }
-        catch(SQLException e){
-            System.out.println("Falha no banco: "+e.getMessage());
+        catch (DataIntegrityViolationException e) {
+            System.out.println("Operação rejeitada: registro duplicado ou ainda utilizado por outros dados.");
+        }
+        catch (DataAccessException e) {
+            System.out.println("Falha no banco: não foi possível concluir a operação.");
+        }
+        catch (org.springframework.beans.BeansException | IllegalStateException e) {
+            System.out.println("Falha no banco: confira DB_URL, DB_USER, DB_PASSWORD e o esquema existente.");
         }
     }
-    @FunctionalInterface private interface RunnableSQL{
-        void run()throws SQLException;
+    @FunctionalInterface private interface Acao{
+        void run();
     }
     public static void main(String[] args){
         try {
@@ -77,7 +101,7 @@ public class Main {
                         case "2"->cadastrar(Perfil.EMPRESA);
                         case "3"->selecionar();
                         case "4"->consultarVagas();
-                        case "5"->svc.areas().forEach(System.out::println);
+                        case "5"->servico().areas().forEach(System.out::println);
                         case "6"->acoes();
                         default->System.out.println("Opção inválida!");
                     }
@@ -86,19 +110,21 @@ public class Main {
         } catch (NoSuchElementException e) {
             // Fim da entrada também pode acontecer no meio de uma operação.
             System.out.println("\nEntrada encerrada.");
+        } finally {
+            if (contexto != null) contexto.close();
         }
     }
-    private static void cadastrar(Perfil perfil)throws SQLException{
+    private static void cadastrar(Perfil perfil){
         String nome=ler("Nome"),email=ler("E-mail");
         String extra=ler(perfil==Perfil.ESTUDANTE?"Curso":"Nome da empresa");
-        System.out.println("Cadastrado: "+svc.cadastrar(nome,email,perfil,perfil==Perfil.ESTUDANTE?extra:null,perfil==Perfil.EMPRESA?extra:null));
+        System.out.println("Cadastrado: "+servico().cadastrar(nome,email,perfil,perfil==Perfil.ESTUDANTE?extra:null,perfil==Perfil.EMPRESA?extra:null));
     }
-    private static void selecionar()throws SQLException{
-        svc.usuarios().forEach(System.out::println);
+    private static void selecionar(){
+        servico().usuarios().forEach(System.out::println);
         long id=numero("ID do usuário");
-        atual=svc.usuarios().stream().filter(u->u.id()==id).findFirst().orElseThrow(()->new IllegalArgumentException("Usuário inexistente."));
+        atual=servico().usuarios().stream().filter(u->u.id()==id).findFirst().orElseThrow(()->new IllegalArgumentException("Usuário inexistente."));
     }
-    private static void consultarVagas()throws SQLException{
+    private static void consultarVagas(){
         String a=ler("ID da área (Enter para todas)");
         Long area=a.isEmpty()?null:Long.valueOf(a);
         String m=ler("Modalidade PRESENCIAL/REMOTA/HIBRIDA (Enter para todas)");
@@ -108,9 +134,9 @@ public class Main {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Modalidade inválida. Use PRESENCIAL, REMOTA ou HIBRIDA.");
         }
-        svc.abertas(area,mod).forEach(System.out::println);
+        servico().abertas(area,mod).forEach(System.out::println);
     }
-    private static void acoes()throws SQLException{
+    private static void acoes(){
         if(atual==null)throw new IllegalArgumentException("Selecione um usuário primeiro.");
         switch(atual.perfil()){
             case ESTUDANTE->estudante();
@@ -118,7 +144,7 @@ public class Main {
             case ADMINISTRADOR->admin();
         }
     }
-    private static void estudante() throws SQLException {
+    private static void estudante()  {
 
     System.out.println(
         "1 Candidatar-se | 2 Minhas candidaturas | 0 Voltar"
@@ -128,13 +154,13 @@ public class Main {
         switch (ler("Opção")) {
 
             case "1" -> System.out.println(
-                svc.candidatar(
+                servico().candidatar(
                     atual.id(),
                     numero("ID da vaga")
                 )
             );
 
-            case "2" -> svc.minhas(atual.id())
+            case "2" -> servico().minhas(atual.id())
                 .forEach(System.out::println);
 
             case "0" -> {
@@ -150,7 +176,7 @@ public class Main {
         return;
     }
 }
-    private static void empresa()throws SQLException{
+    private static void empresa(){
         System.out.println("""
             | 1 Publicar 
             | 2 Minhas vagas 
@@ -159,22 +185,22 @@ public class Main {
             | 5 Candidatos de uma vaga
             """);
         switch(ler("Opção")){
-            case "1"->System.out.println(svc.publicar(atual.id(),ler("Título"),ler("Descrição"),numero("ID da área"),ler("Localização"),opcao("Modalidade",Modalidade.class),inteiro("Carga horária semanal")));
-            case "2"->svc.vagasEmpresa(atual.id()).forEach(System.out::println);
+            case "1"->System.out.println(servico().publicar(atual.id(),ler("Título"),ler("Descrição"),numero("ID da área"),ler("Localização"),opcao("Modalidade",Modalidade.class),inteiro("Carga horária semanal")));
+            case "2"->servico().vagasEmpresa(atual.id()).forEach(System.out::println);
             case "3"->{
                 long id=numero("ID da vaga");
-                svc.editarVaga(atual.id(),id,ler("Título"),ler("Descrição"),numero("ID da área"),ler("Localização"),opcao("Modalidade",Modalidade.class),inteiro("Carga horária semanal"));
+                servico().editarVaga(atual.id(),id,ler("Título"),ler("Descrição"),numero("ID da área"),ler("Localização"),opcao("Modalidade",Modalidade.class),inteiro("Carga horária semanal"));
                 System.out.println("Vaga editada.");
             }
             case "4"->{
-                svc.encerrar(atual.id(),numero("ID da vaga"));
+                servico().encerrar(atual.id(),numero("ID da vaga"));
                 System.out.println("Vaga encerrada.");
             }
-            case "5"->svc.candidatos(atual.id(),numero("ID da vaga")).forEach(System.out::println);
+            case "5"->servico().candidatos(atual.id(),numero("ID da vaga")).forEach(System.out::println);
             default->System.out.println("Opção inválida.");
         }
     }
-    private static void admin()throws SQLException{
+    private static void admin(){
         System.out.println("""
             | 1 Cadastrar área 
             | 2 Listar áreas 
@@ -183,17 +209,17 @@ public class Main {
             | 5 Contagens
             """);
         switch(ler("Opção")){
-            case "1"->System.out.println(svc.criarArea(atual.id(),ler("Nome")));
-            case "2"->svc.areas().forEach(System.out::println);
+            case "1"->System.out.println(servico().criarArea(atual.id(),ler("Nome")));
+            case "2"->servico().areas().forEach(System.out::println);
             case "3"->{
-                svc.editarArea(atual.id(),numero("ID da área"),ler("Novo nome"));
+                servico().editarArea(atual.id(),numero("ID da área"),ler("Novo nome"));
                 System.out.println("Área editada.");
             }
             case "4"->{
-                svc.excluirArea(atual.id(),numero("ID da área"));
+                servico().excluirArea(atual.id(),numero("ID da área"));
                 System.out.println("Área excluída.");
             }
-            case "5"->System.out.println(svc.contagens(atual.id()));
+            case "5"->System.out.println(servico().contagens(atual.id()));
             default->System.out.println("Opção inválida.");
         }
     }

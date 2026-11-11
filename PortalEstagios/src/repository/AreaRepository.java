@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AreaRepository extends JpaRepository<Area, Long> {
     List<Area> findAllByOrderByNomeAsc();
+    boolean existsByName(String nome);
+    boolean existsByNomeAndIdNot(String nome, long id);
 }

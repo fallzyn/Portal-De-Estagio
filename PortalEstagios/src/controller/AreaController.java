@@ -5,20 +5,20 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import service.AreaConsultaService;
+import service.PortalService;
 
 @RestController
 @RequestMapping("/api/areas")
 public class AreaController {
-    private final AreaConsultaService areas;
+    private final PortalService portal;
 
-    public AreaController(AreaConsultaService areas) {
-        this.areas = areas;
+    public AreaController(PortalService portal) {
+        this.portal = portal;
     }
 
     @GetMapping
     public List<AreaResposta> listar() {
-        return areas.listar().stream()
+        return portal.areas().stream()
             .map(area -> new AreaResposta(area.id(), area.nome())).toList();
     }
 }

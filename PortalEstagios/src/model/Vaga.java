@@ -53,14 +53,6 @@ public class Vaga {
         this.situacao = situacao;
     }
 
-    // Compatibilidade temporária com o console/JDBC da Entrega 1.
-    // No fluxo JPA, use o construtor com a empresa e a área obtidas dos repositories.
-    public Vaga(long id, long empresaId, String titulo, String descricao, long areaId,
-                String localizacao, Modalidade modalidade, int cargaHoraria, Situacao situacao) {
-        this(id, new Usuario(empresaId, null, null, null, null, null), titulo, descricao,
-            new Area(areaId, null), localizacao, modalidade, cargaHoraria, situacao);
-    }
-
     public long id() { return id == null ? 0 : id; }
     public long empresaId() { return empresa.id(); }
     public Usuario empresa() { return empresa; }
@@ -74,6 +66,16 @@ public class Vaga {
     public Situacao situacao() { return situacao; }
 
     public void encerrar() { situacao = Situacao.ENCERRADA; }
+
+    public void editar(String titulo, String descricao, Area area, String localizacao,
+                       Modalidade modalidade, int cargaHoraria) {
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.area = area;
+        this.localizacao = localizacao;
+        this.modalidade = modalidade;
+        this.cargaHoraria = cargaHoraria;
+    }
 
     @Override
     public String toString() {

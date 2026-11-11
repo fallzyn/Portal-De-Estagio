@@ -35,14 +35,6 @@ public class Candidatura {
         this.dataInscricao = LocalDateTime.now(ZoneOffset.UTC);
     }
 
-    // Compatibilidade com os testes e o DAO JDBC existentes.
-    public Candidatura(long id, long estudanteId, long vagaId, LocalDate dataInscricao) {
-        this.id = id == 0 ? null : id;
-        this.estudante = new Usuario(estudanteId, null, null, null, null, null);
-        this.vaga = new Vaga(vagaId, 0, null, null, 0, null, null, 0, null);
-        this.dataInscricao = dataInscricao == null ? null : dataInscricao.atStartOfDay();
-    }
-
     public long id() { return id == null ? 0 : id; }
     public long estudanteId() { return estudante.id(); }
     public Usuario estudante() { return estudante; }
