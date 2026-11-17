@@ -1,5 +1,7 @@
 MainTest.class
-JpaRepositoryIT.class
 BancoPostgresTestSupport.class
+JpaRepositoryIT.class
+SenhasTest.class
 PortalServiceIT.class
+StatusControllerTest.class
 RegrasTest.class

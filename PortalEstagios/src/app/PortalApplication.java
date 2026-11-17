@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 // Os pacotes existentes são irmãos, então informamos onde o Spring deve procurar.
-@SpringBootApplication(scanBasePackages = {"app", "controller", "service"})
+@SpringBootApplication(scanBasePackages = {"app", "controller", "service", "config"})
 @EntityScan("model")
 @EnableJpaRepositories("repository")
 public class PortalApplication {

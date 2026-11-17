@@ -1,28 +1,15 @@
-CREATE TABLE usuarios (
- id BIGSERIAL PRIMARY KEY,
- nome VARCHAR(150) NOT NULL CHECK (length(trim(nome))>0),
- email VARCHAR(200) NOT NULL UNIQUE,
- perfil VARCHAR(20) NOT NULL CHECK (perfil IN ('ESTUDANTE','EMPRESA','ADMINISTRADOR')),
- curso VARCHAR(150), nome_empresa VARCHAR(150),
- CONSTRAINT dados_perfil CHECK ((perfil='ESTUDANTE' AND curso IS NOT NULL AND nome_empresa IS NULL) OR (perfil='EMPRESA' AND nome_empresa IS NOT NULL AND curso IS NULL) OR (perfil='ADMINISTRADOR' AND curso IS NULL AND nome_empresa IS NULL))
-);
-CREATE TABLE areas(id BIGSERIAL PRIMARY KEY,nome VARCHAR(100) NOT NULL UNIQUE);
-CREATE TABLE vagas (
- id BIGSERIAL PRIMARY KEY,
- empresa_id BIGINT NOT NULL REFERENCES usuarios(id),
- titulo VARCHAR(150) NOT NULL CHECK(length(trim(titulo))>0),
- descricao TEXT NOT NULL CHECK(length(trim(descricao))>0),
- area_id BIGINT NOT NULL REFERENCES areas(id) ON DELETE RESTRICT,
- localizacao VARCHAR(150) NOT NULL CHECK(length(trim(localizacao))>0),
- modalidade VARCHAR(20) NOT NULL CHECK(modalidade IN ('PRESENCIAL','REMOTA','HIBRIDA')),
- carga_horaria INTEGER NOT NULL CHECK(carga_horaria>0),
- situacao VARCHAR(20) NOT NULL CHECK(situacao IN ('ABERTA','ENCERRADA'))
-);
-CREATE TABLE candidaturas (
- id BIGSERIAL PRIMARY KEY,
- estudante_id BIGINT NOT NULL REFERENCES usuarios(id),
- vaga_id BIGINT NOT NULL REFERENCES vagas(id),
- data_inscricao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
- UNIQUE(estudante_id,vaga_id)
-);
--- Regras de perfil e situação são validadas pelo serviço Java.
+-- Etapa 3A: aplicar uma vez no banco já existente. Repetir é seguro.
+-- Não define senhas, não remove dados e não altera as contas já configuradas.
+BEGIN;
+ALTER TABLE public.usuarios ADD COLUMN IF NOT EXISTS senha_hash VARCHAR(60);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conrelid = 'public.usuarios'::regclass AND conname = 'usuarios_senha_hash_bcrypt'
+    ) THEN
+        ALTER TABLE public.usuarios ADD CONSTRAINT usuarios_senha_hash_bcrypt
+        CHECK (senha_hash IS NULL OR senha_hash ~ '^\$2[aby]\$(0[4-9]|[12][0-9]|3[01])\$[./A-Za-z0-9]{53}$');
+    END IF;
+END $$;
+COMMIT;
