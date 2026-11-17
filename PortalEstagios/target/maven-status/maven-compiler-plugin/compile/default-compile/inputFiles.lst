@@ -1,5 +1,7 @@
+/workspaces/Portal-De-Estagio/PortalEstagios/src/app/GerarHash.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/app/Main.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/app/PortalApplication.java
+/workspaces/Portal-De-Estagio/PortalEstagios/src/config/SenhaConfig.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/controller/AreaController.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/controller/StatusController.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/dto/AreaResposta.java
@@ -15,4 +17,5 @@
 /workspaces/Portal-De-Estagio/PortalEstagios/src/repository/CandidaturaRepository.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/repository/UsuarioRepository.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/repository/VagaRepository.java
+/workspaces/Portal-De-Estagio/PortalEstagios/src/security/Senhas.java
 /workspaces/Portal-De-Estagio/PortalEstagios/src/service/PortalService.java

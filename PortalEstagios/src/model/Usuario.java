@@ -1,6 +1,7 @@
 package model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "usuarios")
@@ -24,6 +25,20 @@ public class Usuario {
 
     @Column(name = "nome_empresa", length = 150)
     private String nomeEmpresa;
+
+    @JsonIgnore
+    @Column(name = "senha_hash", length = 60)
+    private String senhaHash;
+
+    @JsonIgnore
+    public String senhaHash() { return senhaHash; }
+
+    public void definirSenhaHash(String hash) {
+        if (!security.Senhas.formatoBcryptValido(hash)) {
+            throw new IllegalArgumentException("Hash BCrypt inválido.");
+        }
+        this.senhaHash = hash;
+    }
 
     protected Usuario() {
     }

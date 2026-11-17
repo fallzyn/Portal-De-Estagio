@@ -3,12 +3,15 @@ model/Usuario.class
 model/Area.class
 model/Candidatura.class
 app/PortalApplication.class
+config/SenhaConfig.class
 app/Main$1.class
 model/Modalidade.class
 model/Situacao.class
 service/PortalService.class
 repository/AreaRepository.class
+security/Senhas.class
 repository/UsuarioRepository.class
+app/GerarHash.class
 repository/CandidaturaRepository.class
 controller/StatusController.class
 app/Main.class
