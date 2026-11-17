@@ -1,0 +1,7 @@
+Consulta pública sem login APROVADA
+Publicação, edição e listagem próprias pela interface APROVADAS
+Candidatura válida, listagem e duplicidade bloqueada APROVADAS
+Contas distintas: vagas e candidaturas isoladas APROVADAS
+Encerramento, bloqueio de inscrição e preservação de anteriores APROVADOS
+Administrador inicializado, login e administração via API APROVADOS
+Nenhum erro JavaScript nas telas.

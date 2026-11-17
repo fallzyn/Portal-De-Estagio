@@ -1,0 +1,2 @@
+Reinicialização: vaga encerrada e candidatura preservadas; login com contas persistidas APROVADO
+Nenhum erro JavaScript nas telas.

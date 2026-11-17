@@ -8,7 +8,11 @@ class MainTest {
     private String executar(String entrada) throws Exception {
         String java = Path.of(System.getProperty("java.home"), "bin", "java").toString();
         String classes = System.getProperty("surefire.test.class.path", System.getProperty("java.class.path"));
-        ProcessBuilder comando = new ProcessBuilder(java, "-cp", classes, "app.Main")
+        // O processo filho deve emitir os mesmos bytes UTF-8 que o teste decodifica,
+        // inclusive no Windows, onde stdout pode usar a página de código nativa.
+        ProcessBuilder comando = new ProcessBuilder(java,
+            "-Dfile.encoding=UTF-8", "-Dstdout.encoding=UTF-8", "-Dstderr.encoding=UTF-8",
+            "-cp", classes, "app.Main")
             .redirectErrorStream(true);
         // Estes cenários devem encerrar ou rejeitar a entrada antes de acessar o banco.
         comando.environment().remove("DB_PASSWORD");
@@ -29,23 +33,25 @@ class MainTest {
     }
 
     @Test void fimDaEntradaNoMenuEncerraSemErro() throws Exception {
-        assertTrue(executar("").contains("Entrada encerrada."));
+        String saida = executar("");
+        assertTrue(saida.contains("Entrada encerrada."), saida);
     }
 
     @Test void fimDaEntradaDuranteCadastroNaoGravaDados() throws Exception {
-        assertTrue(executar("1\nNome incompleto\n").contains("Entrada encerrada."));
+        String saida = executar("1\nNome incompleto\n");
+        assertTrue(saida.contains("Entrada encerrada."), saida);
     }
 
     @Test void fimDaEntradaAposNumeroInvalidoEncerraSemErro() throws Exception {
         String saida = executar("4\nabc\n");
-        assertTrue(saida.contains("Número inválido."));
-        assertTrue(saida.contains("Entrada encerrada."));
+        assertTrue(saida.contains("Número inválido."), saida);
+        assertTrue(saida.contains("Entrada encerrada."), saida);
     }
 
     @Test void modalidadeInvalidaNaoEncerraOMenu() throws Exception {
         String saida = executar("4\n\nqualquer\n0\n");
-        assertTrue(saida.contains("Modalidade inválida. Use PRESENCIAL, REMOTA ou HIBRIDA."));
-        assertFalse(saida.contains("No enum constant"));
+        assertTrue(saida.contains("Modalidade inválida. Use PRESENCIAL, REMOTA ou HIBRIDA."), saida);
+        assertFalse(saida.contains("No enum constant"), saida);
     }
 
     @Test void sairEncerraNormalmente() throws Exception {

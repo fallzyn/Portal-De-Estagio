@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Entrar — Portal de Estágios</title><link rel="stylesheet" href="/css/auth.css"><script src="/js/auth.js" defer></script></head>
+<body><main><h1>Entre na sua conta</h1><p>Portal de Estágios</p>
+<form id="login" method="post" action="/api/auth/login">
+<input name="_csrf" type="hidden">
+<label>E-mail<input name="username" type="email" autocomplete="username" maxlength="200" required></label>
+<label>Senha<input name="password" type="password" autocomplete="current-password" required></label>
+<button type="submit" disabled>Entrar</button>
+</form><p id="mensagem" role="status" aria-live="polite"></p><a href="/cadastro.html">Criar uma conta</a>
+<p><a href="/portal.html">Consultar vagas</a></p></main></body></html>

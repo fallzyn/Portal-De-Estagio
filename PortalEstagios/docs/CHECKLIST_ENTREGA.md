@@ -1,3 +1,7 @@
+# Histórico da Entrega 1
+
+Para a versão atual, consulte [Checklist da Entrega 2](CHECKLIST_ENTREGA_2.md).
+
 # Checklist antes de enviar ao Moodle
 
 - [X] Preencher os nomes reais dos integrantes no README.

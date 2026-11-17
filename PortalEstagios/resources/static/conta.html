@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Minha conta — Portal de Estágios</title><link rel="stylesheet" href="/css/auth.css"><script src="/js/auth.js" defer></script></head>
+<body><main><h1>Minha conta</h1><p id="identidade" role="status">Carregando sua conta…</p>
+<section><h2>Áreas de estágio</h2><ul id="areas"></ul></section>
+<section id="administracao" hidden><h2>Contagens administrativas</h2><dl id="contagens"></dl></section>
+<p id="mensagem" role="status" aria-live="polite"></p>
+<form id="sair" method="post" action="/logout"><input name="_csrf" type="hidden"><button type="submit" disabled>Sair</button></form>
+<p><a href="/portal.html">Consultar vagas</a></p></main></body></html>

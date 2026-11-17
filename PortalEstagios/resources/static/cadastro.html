@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cadastro — Portal de Estágios</title><link rel="stylesheet" href="/css/auth.css"><script src="/js/auth.js" defer></script></head>
+<body><main><h1>Crie sua conta</h1><p>Portal de Estágios</p>
+<form id="cadastro">
+<label>Nome<input name="nome" autocomplete="name" maxlength="150" required></label>
+<label>E-mail<input name="email" type="email" autocomplete="email" maxlength="200" required></label>
+<label>Perfil<select name="perfil"><option value="ESTUDANTE">Estudante</option><option value="EMPRESA">Empresa</option></select></label>
+<label id="campo-curso">Curso<input name="curso" maxlength="150" required></label>
+<label id="campo-empresa" hidden>Nome da empresa<input name="nomeEmpresa" maxlength="150" disabled></label>
+<label>Senha<input name="senha" type="password" autocomplete="new-password" minlength="8" maxlength="72" required></label>
+<p class="ajuda">Use uma senha exclusiva, com pelo menos 8 caracteres. O limite é de 72 bytes.</p>
+<button type="submit">Cadastrar</button>
+</form><p id="mensagem" role="status" aria-live="polite"></p><a href="/login">Já tenho conta — entrar</a>
+<p><a href="/portal.html">Consultar vagas</a></p></main></body></html>

@@ -31,26 +31,26 @@ public class PortalService {
     private Usuario exigir(long id, Perfil perfil) {
         Usuario usuario = usuarios.findById(id).orElse(null);
         if (usuario == null || usuario.perfil() != perfil) {
-            throw new IllegalArgumentException("Operação não permitida para este perfil.");
+            throw new AcessoNegadoException("Operação não permitida para este perfil.");
         }
         return usuario;
     }
 
     private Area area(long id) {
         return areas.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Área inexistente."));
+            .orElseThrow(() -> new RegistroNaoEncontradoException("Área inexistente."));
     }
 
     private Vaga vaga(long id, boolean bloquear) {
         return (bloquear ? vagas.bloquearPorId(id) : vagas.findById(id))
-            .orElseThrow(() -> new IllegalArgumentException("Vaga inexistente."));
+            .orElseThrow(() -> new RegistroNaoEncontradoException("Vaga inexistente."));
     }
 
     private Vaga propria(long empresa, long id, boolean bloquear) {
         exigir(empresa, Perfil.EMPRESA);
         Vaga vaga = vaga(id, bloquear);
         if (vaga.empresaId() != empresa) {
-            throw new IllegalArgumentException("A vaga pertence a outra empresa.");
+            throw new AcessoNegadoException("A vaga pertence a outra empresa.");
         }
         return vaga;
     }
@@ -81,7 +81,7 @@ public class PortalService {
     public Area criarArea(long admin, String nome) {
         exigir(admin, Perfil.ADMINISTRADOR);
         texto(nome, "Nome da área");
-        if (areas.existsByNome(nome)) throw new IllegalArgumentException("Área já cadastrada.");
+        if (areas.existsByNome(nome)) throw new ConflitoException("Área já cadastrada.");
         return areas.saveAndFlush(new Area(0, nome));
     }
 
@@ -90,7 +90,7 @@ public class PortalService {
         texto(nome, "Nome da área");
         Area atual = area(id);
         if (areas.existsByNomeAndIdNot(nome, id)) {
-            throw new IllegalArgumentException("Área já cadastrada.");
+            throw new ConflitoException("Área já cadastrada.");
         }
         atual.editar(nome);
         areas.saveAndFlush(atual);
@@ -100,7 +100,7 @@ public class PortalService {
         exigir(admin, Perfil.ADMINISTRADOR);
         Area atual = area(id);
         if (vagas.existsByArea_Id(id)) {
-            throw new IllegalArgumentException("Área utilizada por uma vaga não pode ser excluída.");
+            throw new ConflitoException("Área utilizada por uma vaga não pode ser excluída.");
         }
         areas.delete(atual);
         areas.flush();
@@ -133,7 +133,7 @@ public class PortalService {
                            String local, Modalidade modalidade, int carga) {
         Vaga atual = propria(empresa, id, true);
         if (atual.situacao() == Situacao.ENCERRADA) {
-            throw new IllegalArgumentException("Vaga encerrada não pode ser editada.");
+            throw new ConflitoException("Vaga encerrada não pode ser editada.");
         }
         Area area = validarVaga(titulo, descricao, idArea, local, modalidade, carga);
         atual.editar(titulo, descricao, area, local, modalidade, carga);
@@ -143,7 +143,7 @@ public class PortalService {
     public void encerrar(long empresa, long id) {
         Vaga atual = propria(empresa, id, true);
         if (atual.situacao() == Situacao.ENCERRADA) {
-            throw new IllegalArgumentException("Vaga já encerrada.");
+            throw new ConflitoException("Vaga já encerrada.");
         }
         atual.encerrar();
         vagas.saveAndFlush(atual);
@@ -167,10 +167,10 @@ public class PortalService {
         // A verificação da situação e a inscrição ficam na mesma transação.
         Vaga vaga = vaga(idVaga, true);
         if (vaga.situacao() != Situacao.ABERTA) {
-            throw new IllegalArgumentException("Vaga encerrada.");
+            throw new ConflitoException("Vaga encerrada.");
         }
         if (candidaturas.existsByEstudante_IdAndVaga_Id(estudante, idVaga)) {
-            throw new IllegalArgumentException("Candidatura já existente.");
+            throw new ConflitoException("Candidatura já existente.");
         }
         return candidaturas.saveAndFlush(new Candidatura(aluno, vaga));
     }

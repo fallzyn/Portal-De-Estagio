@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vagas — Portal de Estágios</title><link rel="stylesheet" href="/css/auth.css"><script src="/js/portal.js" defer></script></head>
+<body><main class="portal"><h1>Portal de Estágios</h1>
+<nav><a href="/login">Entrar</a> · <a href="/cadastro.html">Criar conta</a> · <a href="/conta.html">Minha conta e saída</a></nav>
+<p id="usuario">Consulta pública de vagas abertas</p><p id="mensagem" role="status" aria-live="polite"></p>
+<section><h2>Vagas abertas</h2><form id="filtros" class="grade">
+<label>Área<select name="area"><option value="">Todas</option></select></label>
+<label>Modalidade<select name="modalidade"><option value="">Todas</option><option>PRESENCIAL</option><option>REMOTA</option><option>HIBRIDA</option></select></label><button>Buscar vagas</button></form><div id="vagas"></div></section>
+<section id="estudante" hidden><h2>Minhas candidaturas</h2><button id="atualizar-minhas">Atualizar candidaturas</button><div id="minhas"></div></section>
+<section id="empresa" hidden><h2 id="titulo-form">Publicar vaga</h2><form id="vaga-form">
+<label>Título<input name="titulo" maxlength="150" required></label>
+<label>Descrição<textarea name="descricao" required></textarea></label>
+<label>Área<select name="areaId" required></select></label>
+<label>Localização<input name="localizacao" maxlength="150" required></label>
+<label>Modalidade<select name="modalidade"><option>PRESENCIAL</option><option>REMOTA</option><option>HIBRIDA</option></select></label>
+<label>Carga horária semanal<input name="cargaHoraria" type="number" min="1" max="2147483647" step="1" required></label>
+<button type="submit">Salvar vaga</button><button type="button" id="cancelar-edicao" hidden>Cancelar edição</button></form>
+<h2>Vagas da minha empresa</h2><button id="atualizar-empresa">Atualizar minhas vagas</button><div id="minhas-vagas"></div>
+<h2>Candidatos da vaga selecionada</h2><p id="vaga-selecionada">Selecione uma vaga para consultar seus candidatos.</p><div id="candidatos"></div></section>
+</main></body></html>
